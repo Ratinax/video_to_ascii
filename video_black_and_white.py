@@ -67,7 +67,7 @@ def print_points(image, width, height):
 			x += 2
 		content += '\n'
 		y += 4
-	sys.stdout.write(content + int(y / 4) * "\033[F")
+	sys.stdout.write(content + (y >> 2) * "\033[F")
 
 def get_terminal_size():
 	rows, columns = os.popen('stty size', 'r').read().split()
