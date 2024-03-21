@@ -13,7 +13,7 @@ def resize_with_ratio(width, height, target_width = 0, target_height = 0):
 		return (new_width, target_height)
 	return (int(width), int(height))
 
-def resize_image(image, width, height, rows, columns):
+def resize_image(image, width, height, columns, rows):
 	x, y = width, height
 	while x > columns or y > rows:
 		x -= 1
@@ -22,6 +22,8 @@ def resize_image(image, width, height, rows, columns):
 		new_width, new_height = resize_with_ratio(width, height, target_width=x)
 	else:
 		new_width, new_height = resize_with_ratio(width, height, target_height=y)
+	new_width *= 3
+	new_height *= 2
 	return (cv2.resize(image, (new_width, new_height)), new_width, new_height)
 
 def get_three_lines(image, lineInd, lineSize):
@@ -79,9 +81,7 @@ def main():
 	image = cv2.imread(image_path)
 
 	new_width, new_height = get_terminal_size()
-	new_width -= 1
-	new_width *= 3
-	new_height *= 2
+
 
 	height, width, channels = image.shape
 
