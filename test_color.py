@@ -81,42 +81,6 @@ def get_terminal_size():
 	rows, columns = os.popen('stty size', 'r').read().split()
 	return int(rows), int(columns)
 
-def simplify_colors(image):
-
-	image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-	ranges = [
-		((0, 50, 50), (10, 255, 255)),      # Rouge
-		((20, 50, 50), (40, 255, 255)),     # Jaune
-		((100, 50, 50), (130, 255, 255)),   # Bleu
-		((40, 50, 50), (80, 255, 255)),     # Vert
-		((10, 100, 100), (25, 255, 255)),   # Orange
-		((140, 50, 50), (160, 255, 255)),   # Violet
-		((0, 0, 0), (0, 50, 50)),        # Noir
-		((0, 0, 220), (180, 30, 255))       # Blanc
-	]
-
-	colors = [
-		(0, 0, 255),    # Rouge
-		(0, 255, 255),  # Jaune
-		(120, 255, 255),# Bleu
-		(60, 255, 255), # Vert
-		(20, 100, 255), # Orange
-		(140, 255, 255),# Violet
-		(0, 0, 0),      # Noir
-		(0, 0, 255)     # Blanc
-	]
-
-	# Initialiser une image vide pour stocker l'image simplifiée
-	simplified_image = np.zeros_like(image)
-
-	# Mapper chaque pixel à la couleur la plus proche dans la liste des couleurs prédéfinies
-	for i in range(len(ranges)):
-		mask = cv2.inRange(image_hsv, ranges[i][0], ranges[i][1])
-		simplified_image[mask > 0] = colors[i]
-
-	return simplified_image
-
 def main():
 	image_path = "monkey.jpg"
 	image = cv2.imread(image_path)
@@ -131,13 +95,8 @@ def main():
 
 	resized_image, width, height = resize_image(image, width, height, new_width, new_height)
 	color_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
-	# color_image = simplify_colors(resized_image)
-	# blackAndWhiteImage = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
-	# image_simplified = cv2.cvtColor(resized_image, cv2.COLOR)
-	# print(image_simplified	)
 
 	print_points(color_image, width, height)
 
 if __name__ == "__main__":
 	main()
-
