@@ -24,24 +24,23 @@ def resize_image(image, width, height, columns, rows):
 	else:
 		new_width, new_height = resize_with_ratio(width, height, target_height=y)
 
-	# print('resized to', new_width, new_height)
 	return (cv2.resize(image, (new_width, new_height)), new_width, new_height)
 
-def get_three_lines(image, lineInd, lineSize):
+def get_four_lines(image, lineInd, lineSize):
 	res = []
-	for i in range(3):
+	for i in range(4):
 		try:
 			res.append(image[lineInd + i])
 		except Exception:
 			res.append([(0, 0, 0) for i in range(lineSize)])
 	return res
 
-def get_six_points(three_lines, colInd):
+def get_height_points(four_lines, colInd):
 	res = []
 	for j in range(2):
-		for i in range(3):
+		for i in range(4):
 			try:
-				res.append(three_lines[i][colInd + j])
+				res.append(four_lines[i][colInd + j])
 			except Exception:
 				res.append((0, 0, 0))
 
@@ -55,21 +54,21 @@ def getIsBlack(point):
 		return False
 	return True
 
-def get_six_points_char(six_points):
+def get_height_points_char(height_points):
 	val = 10240
-	for i in range(6):
-		val += (2**i) * (getIsBlack(six_points[i]) == 0)
+	for i in range(8):
+		val += (2**i) * (getIsBlack(height_points[i]) == 0)
 	return chr(val)
 
 def print_points(image, width, height):
 	y = 0
 	nbLines = 0
 	while y < height:
-		three_lines = get_three_lines(image, y, height)
+		four_lines = get_four_lines(image, y, height)
 		x = 0
 		while x < width:
-			six_points = get_six_points(three_lines, x)
-			print(get_six_points_char(six_points),end="")
+			height_points = get_height_points(four_lines, x)
+			print(get_height_points_char(height_points),end="")
 			x += 2
 		print()
 		nbLines += 1
@@ -79,6 +78,7 @@ def print_points(image, width, height):
 def get_terminal_size():
 	rows, columns = os.popen('stty size', 'r').read().split()
 	return int(rows), int(columns)
+
 
 def hide_cursor():
 	sys.stdout.write('\033[?25l')
