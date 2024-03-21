@@ -22,6 +22,8 @@ def resize_image(image, width, height, columns, rows):
 		new_width, new_height = resize_with_ratio(width, height, target_width=x)
 	else:
 		new_width, new_height = resize_with_ratio(width, height, target_height=y)
+	print('end', new_width, new_height)
+	print(new_width, new_height)
 
 	return (cv2.resize(image, (new_width, new_height)), new_width, new_height)
 
