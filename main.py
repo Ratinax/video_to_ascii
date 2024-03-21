@@ -1,6 +1,14 @@
 import cv2
 import os
 import sys
+from ansi.colour.rgb import rgb256
+
+
+def get_terminal_color(pixel):
+	if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
+		return 'black'
+	pixel = tuple(pixel)
+	return rgb256(pixel[0], pixel[1], pixel[2])
 
 def resize_with_ratio(width, height, target_width = 0, target_height = 0):
 
@@ -23,7 +31,6 @@ def resize_image(image, width, height, columns, rows):
 		new_width, new_height = resize_with_ratio(width, height, target_width=x)
 	else:
 		new_width, new_height = resize_with_ratio(width, height, target_height=y)
-
 	return (cv2.resize(image, (new_width, new_height)), new_width, new_height)
 
 def get_four_lines(image, lineInd, lineSize):
@@ -46,19 +53,18 @@ def get_height_points(four_lines, colInd):
 
 	return res
 
-def getIsBlack(point):
-	if isinstance(point, tuple):
-		return point == (0, 0, 0)
-
-	if (int(point) > 127):
-		return False
-	return True
-
 def get_height_points_char(height_points):
-	val = 10240
-	for i in range(8):
-		val += (2**i) * (getIsBlack(height_points[i]) == 0)
-	return chr(val)
+	res = []
+	val = 10495
+	for i in range(len(height_points)):
+		color = get_terminal_color(height_points[i])
+		if color == 'black':
+			val -= (2**i)
+		else:
+			res.append(color)
+	if len(res) == 0:
+		return chr(val)
+	return max(set(res), key = res.count) + chr(val)
 
 def print_points(image, width, height):
 	y = 0
@@ -112,10 +118,10 @@ def process_video(video_path):
 			break
 		height, width, channels = frame.shape
 		resized_image, width, height = resize_image(frame, width, height, new_width, new_height)
-		blackAndWhiteImage = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+		color_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
 
 
-		nbLines = print_points(blackAndWhiteImage, width, height)
+		nbLines = print_points(color_image, width, height)
 		for i in range(nbLines):
 			sys.stdout.write("\033[F")
 
