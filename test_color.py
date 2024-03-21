@@ -4,8 +4,6 @@ import numpy as np
 from ansi.colour.rgb import rgb256
 
 def get_terminal_color(pixel):
-	if pixel[0] < 50 and pixel[1] < 50 and pixel[2] < 50:
-		return 'black'
 	pixel = tuple(pixel)
 	return rgb256(pixel[0], pixel[1], pixel[2])
 
@@ -57,7 +55,7 @@ def get_height_points_char(height_points):
 	val = 10495
 	for i in range(len(height_points)):
 		color = get_terminal_color(height_points[i])
-		if color == 'black':
+		if color == '"[38;5;232m"':
 			val -= (2**i)
 		else:
 			res.append(color)
