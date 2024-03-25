@@ -34,7 +34,7 @@ def resize_image(image, width, height, columns, rows):
 		new_width, new_height = resize_with_ratio(width, height, target_height=y)
 	return (cv2.resize(image, (new_width, new_height)), new_width, new_height)
 
-def get_four_lines(image, lineInd, lineSize):
+def get_four_lines(image, lineInd):
 	res = []
 	for i in range(4):
 		try:
@@ -60,7 +60,7 @@ def print_points(image, width, height):
 	y = 0
 	content = ""
 	while y < height:
-		four_lines = get_four_lines(image, y, height)
+		four_lines = get_four_lines(image, y)
 		x = 0
 		while x < width:
 			content += get_height_points(four_lines, x)
